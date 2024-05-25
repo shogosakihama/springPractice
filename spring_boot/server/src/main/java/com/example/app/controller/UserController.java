@@ -1,16 +1,17 @@
 package com.example.app.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import com.example.app.repository.UserRepository;
 import com.example.app.entity.User;
 
 import java.util.Optional;
 
-@RestController
+@Controller
 public class UserController {
 
   private final UserRepository repository;
@@ -20,14 +21,25 @@ public class UserController {
     this.repository = repository;
   }
 
-  @RequestMapping("/")
-  public String user() {
-    return String.valueOf(repository.findAll());
+  @GetMapping("/form")
+  public String showForm() {
+    return "userForm"; // userForm.htmlを表示
+  }
+
+  @PostMapping("/user")
+  public String getUserNameByIdPost(@RequestParam Long id, Model model) {
+    Optional<User> user = repository.findById(id);
+    String userName = user.map(User::getName).orElse("User not found");
+    model.addAttribute("userName", userName);
+    return "userResult"; // userResult.htmlを表示
   }
 
   @GetMapping("/user")
-    public String getUserNameById(@RequestParam Long id) {
-        Optional<User> user = repository.findById(id);
-        return user.map(User::getName).orElse("User not found");
-    }
+  public String getUserNameById(@RequestParam Long id, Model model) {
+      Optional<User> user = repository.findById(id);
+      String userName = user.map(User::getName).orElse("User not found");
+      model.addAttribute("userName", userName);
+      return "userResult"; // userResult.htmlを表示
+  }
+  
 }

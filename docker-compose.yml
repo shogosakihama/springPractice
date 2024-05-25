@@ -1,3 +1,4 @@
+version: '3'
 services:
   app:
     image: openjdk:21
@@ -7,6 +8,7 @@ services:
     tty: true
     volumes:
       - ./server:/srv:cached
+      - .:/app  # この行を追加
     working_dir: /srv
     depends_on:
       - db
